@@ -26,11 +26,11 @@ class Weather {
 class WeatherService {
   // TODO: Define the baseURL, API key, and city name properties
   private apiKey: string = '11387920c79fca1d01b7ed6dd54bc3ee';
-  private cityName: string = 'London';
-  private baseURL: string = `api.openweathermap.org/data/2.5/forecast`;
+  private cityName: string = 'Atlanta';
+  private baseURL: string = `https://api.openweathermap.org/data/2.5`;
   // TODO: Create fetchLocationData method
   private async fetchLocationData(query: string): Promise<any> {
-    const response = await fetch(`${this.baseURL}/geocode?address=${query}&key=${this.apiKey}`);
+    const response = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${query}&amp;limit=1&amp;appid=${this.apiKey}`)
     if (!response.ok) {
       throw new Error('Failed to fetch location data');
     }
@@ -68,7 +68,7 @@ class WeatherService {
   // private async fetchWeatherData(coordinates: Coordinates) {}
   private async fetchWeatherData(coordinates: Coordinates) {
     const query = this.buildWeatherQuery(coordinates);
-    const response = await fetch(`${this.baseURL}/weather?${query}`);
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?${query}`);
     if (!response.ok) {
       throw new Error('Failed to fetch weather data');
     }
@@ -77,18 +77,20 @@ class WeatherService {
   // TODO: Build parseCurrentWeather method
   // private parseCurrentWeather(response: any) {}
   private parseCurrentWeather(response: any): Weather {
-    const { temp, humidity, wind_speed } = response.main;
+    const { temp, humidity } = response.main;
+    const { speed: windSpeed } = response.wind;
     const { description } = response.weather[0];
-    return new Weather(temp, humidity, wind_speed, description);
+    return new Weather(temp, humidity, windSpeed, description);
   }
   // TODO: Complete buildForecastArray method
   // private buildForecastArray(currentWeather: Weather, weatherData: any[]) {}
   //check the underscore in the parameter
   private buildForecastArray(_currentWeather: Weather, weatherData: any[]) {
     return weatherData.map((data: any) => {
-      const { temp, humidity, wind_speed } = data.main;
-      const { description } = data.weather[0];
-      return new Weather(temp, humidity, wind_speed, description);
+    const { temp, humidity } = data.main;
+    const { speed: windSpeed } = data.wind;
+    const { description } = data.weather[0];
+    return new Weather(temp, humidity, windSpeed, description);
     });
     
   }
