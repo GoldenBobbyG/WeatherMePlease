@@ -1,15 +1,28 @@
-const fs = require('fs').promises;
-
+import fs from 'fs/promises';
 // TODO: Define a City class with name and id properties
 class City {
-  constructor(public id: string, public name: string) {}
+  name: string;
+  id: string;
+  constructor(name: string, id: string) {
+    this.name = name;
+    this.id = id;
+  }
 }
+
+/*
+  fetch()
+    .then(resposne => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error(error))
+
+
+*/
 
 // TODO: Complete the HistoryService class
 class HistoryService {
   // TODO: Define a read method that reads from the searchHistory.json file
   private async read(): Promise<City[]> {
-    const filePath = '/c:/Users/stric/repos/projects/weathermeplease/server/src/data/searchHistory.json';
+    const filePath = './db/db.json';
     try {
       const data = await fs.readFile(filePath, 'utf-8');
       const cities = JSON.parse(data);
@@ -21,7 +34,7 @@ class HistoryService {
   }
   // private async read() {}
   private async write(cities: City[]): Promise<void> {
-    const filePath = '/c:/Users/stric/repos/projects/weathermeplease/server/src/data/searchHistory.json';
+    const filePath = './db/db.json';
     try {
       const data = JSON.stringify(cities, null, 2);
       await fs.writeFile(filePath, data, 'utf-8');

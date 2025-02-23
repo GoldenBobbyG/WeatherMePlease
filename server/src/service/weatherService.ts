@@ -25,9 +25,9 @@ class Weather {
 // TODO: Complete the WeatherService class
 class WeatherService {
   // TODO: Define the baseURL, API key, and city name properties
-  private baseURL: string = 'api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid=11387920c79fca1d01b7ed6dd54bc3ee; 
-  private WeatherKey ='11387920c79fca1d01b7ed6dd54bc3ee'; 
-  private cityName: "Thomaston";
+  private apiKey: string = '11387920c79fca1d01b7ed6dd54bc3ee';
+  private cityName: string = 'London';
+  private baseURL: string = `api.openweathermap.org/data/2.5/forecast`;
   // TODO: Create fetchLocationData method
   private async fetchLocationData(query: string): Promise<any> {
     const response = await fetch(`${this.baseURL}/geocode?address=${query}&key=${this.apiKey}`);
@@ -39,10 +39,10 @@ class WeatherService {
   // private async fetchLocationData(query: string) {}
   // TODO: Create destructureLocationData method
   private destructureLocationData(locationData: any): Coordinates {
-    const { lat, lng } = locationData.results[0].geometry.location;
+    const { lat, lon } = locationData.results[0].geometry.location;
     return {
       latitude: lat,
-      longitude: lng
+      longitude: lon,
     };
   }
   // private destructureLocationData(locationData: Coordinates): Coordinates {}
@@ -83,14 +83,17 @@ class WeatherService {
   }
   // TODO: Complete buildForecastArray method
   // private buildForecastArray(currentWeather: Weather, weatherData: any[]) {}
-  private buildForecastArray(currentWeather: Weather, weatherData: any[]) {
+  //check the underscore in the parameter
+  private buildForecastArray(_currentWeather: Weather, weatherData: any[]) {
     return weatherData.map((data: any) => {
       const { temp, humidity, wind_speed } = data.main;
       const { description } = data.weather[0];
       return new Weather(temp, humidity, wind_speed, description);
     });
+    
   }
   // TODO: Complete getWeatherForCity method
+  
   // async getWeatherForCity(city: string) {}
   async getWeatherForCity(city: string) {
     this.cityName = city;
@@ -105,6 +108,7 @@ class WeatherService {
     const forecast = this.buildForecastArray(currentWeather, forecastData.list);
     return { currentWeather, forecast };
   }
+  
 }
 
 export default new WeatherService();

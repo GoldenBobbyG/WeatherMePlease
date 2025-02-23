@@ -6,8 +6,11 @@ const router = Router();
 // import HistoryService from '../../service/historyService.js';
 // import WeatherService from '../../service/weatherService.js';
 
+
+// All of these routes are prefixed with '/api/weather'
 // TODO: POST Request with city name to retrieve weather data
-router.post('/', (req: Request, res: Response) => {
+
+router.post('/api/weather/', async (req: Request, res: Response) => {
   // TODO: GET weather data from city name
   const cityName = req.body.city;
   if (!cityName) {
@@ -15,20 +18,20 @@ router.post('/', (req: Request, res: Response) => {
   }
 
   try {
-    const weatherData = await WeatherService.getWeatherByCityName(cityName);
-    res.json(weatherData);
+    const weatherData = await WeatherService.getWeatherForCity(cityName);
+    return res.json(weatherData);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to retrieve weather data' });
+    return res.status(500).json({ error: 'Failed to retrieve weather data' });
   }
   // TODO: save city to search history
-  await HistoryService.saveCityToHistory(cityName);
+  await HistoryService.addCity(cityName);
+ 
 });
 
 // TODO: GET search history
-router.get('/history', async (_req: Request, res: Response) => {});
-router.get('/history', async (_req: Request, res: Response) => {
+router.get('/history', async (_req: Request, res: Response) => {  // This endpoint is 'api/weather/history' w/ GET HTTP request method
   try {
-    const history = await HistoryService.getSearchHistory();
+    const history = await HistoryService.getCities();
     res.json(history);
   } catch (error) {
     res.status(500).json({ error: 'Failed to retrieve search history' });
@@ -36,11 +39,10 @@ router.get('/history', async (_req: Request, res: Response) => {
 });
 
 // * BONUS TODO: DELETE city from search history
-router.delete('/history/:id', async (_req: Request, res: Response) => {});
-router.delete('/history/:id', async (_req: Request, res: Response) => {
-  const id = _req.params.id;
+router.delete('/history/:id', async (req: Request, res: Response) => {
+  const id = req.params.id;
   try {
-    await HistoryService.deleteCityFromHistory(id);
+    await HistoryService.removeCity(id);
     res.json({ message: 'City deleted from search history' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to delete city from search history' });
