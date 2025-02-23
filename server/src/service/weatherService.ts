@@ -25,27 +25,30 @@ class Weather {
 // TODO: Complete the WeatherService class
 class WeatherService {
   // TODO: Define the baseURL, API key, and city name properties
-  private apiKey: string = '11387920c79fca1d01b7ed6dd54bc3ee';
-  private cityName: string = 'Atlanta';
-  private baseURL: string = `https://api.openweathermap.org/data/2.5`;
-  // TODO: Create fetchLocationData method
+  private apiKey: string = process.env.API_KEY || ''; // Fetch API key from environment variables
+  private cityName: string = '';
+  private baseURL: string = 'https://api.openweathermap.org/data/2.5';
+
+  // TODO: Create fetchLocationData method 
+  // private async fetchLocationData(query: string) {}
   private async fetchLocationData(query: string): Promise<any> {
-    const response = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${query}&amp;limit=1&amp;appid=${this.apiKey}`)
+    const response = await fetch(`${this.baseURL}/weather?q=${query}&appid=${this.apiKey}`);
     if (!response.ok) {
       throw new Error('Failed to fetch location data');
     }
     return await response.json();
   }
-  // private async fetchLocationData(query: string) {}
+ 
   // TODO: Create destructureLocationData method
+ // private destructureLocationData(locationData: Coordinates): Coordinates {}
   private destructureLocationData(locationData: any): Coordinates {
-    const { lat, lon } = locationData.results[0].geometry.location;
+    const {coord} = locationData.results[0].geometry.location;
     return {
-      latitude: lat,
-      longitude: lon,
+      latitude: coord.lat,
+      longitude: coord.lon,
     };
   }
-  // private destructureLocationData(locationData: Coordinates): Coordinates {}
+  
 
   // TODO: Create buildGeocodeQuery method
   // private buildGeocodeQuery(): string {}
@@ -68,7 +71,7 @@ class WeatherService {
   // private async fetchWeatherData(coordinates: Coordinates) {}
   private async fetchWeatherData(coordinates: Coordinates) {
     const query = this.buildWeatherQuery(coordinates);
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?${query}`);
+    const response = await fetch(`${this.baseURL}/weather?${query}`);
     if (!response.ok) {
       throw new Error('Failed to fetch weather data');
     }
@@ -102,6 +105,7 @@ class WeatherService {
     const coordinates = await this.fetchAndDestructureLocationData();
     const currentWeatherResponse = await this.fetchWeatherData(coordinates);
     const currentWeather = this.parseCurrentWeather(currentWeatherResponse);
+    
     const forecastResponse = await fetch(`${this.baseURL}/forecast?${this.buildWeatherQuery(coordinates)}`);
     if (!forecastResponse.ok) {
       throw new Error('Failed to fetch forecast data');
