@@ -17,6 +17,12 @@ Contributers are welcome!
 ## Tests
 Utilize https://weathermeplease.onrender.com/ and input your city and click search. 
 
+## Snippet
+![image](https://github.com/user-attachments/assets/7496f438-3375-4bdd-b818-556d31f5050d)
+
+## Notes
+Assistant from Xpert, tutors, classmates, and debuging with coPilot. 
+
 
 ## License
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
